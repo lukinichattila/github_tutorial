@@ -1,0 +1,380 @@
+git config --global user.name "Your Name"
+git config --global user.email “you@example.com”     <-configure git
+comMands:
+    pwd: show current path
+    cd d: <- change drive to d
+    dir or ls show content of directory
+    cd *directory name   <- change directory
+    touch *filename      <- create new file
+    rm                   <- remove files from the working tree and from the index(it deletes them from the drive)
+    tree <folder and path><-lists the folder tree of the directory
+    git init             <-initialie git repository
+    git status           <- the status of the working tree( what files were changed, added,etc)
+    echo "s" >gear       <- create a file gear with the content s
+    git add filename     <- adds a file to index and tracking area  -a (all)
+	git add -p filename  <- it asks which line from the changes in the file we want to add to the staging area 
+	git pull             <- brings down and integrates changes from remote to local
+	git pull --rebase
+    git reset HEAD filename  <- removes the file from staged to unstaged
+    git commit           <- type git message , type ESC, and at the end :wq and Enter to save
+    git commit -m "text mesage" <comits staged filesif we write without message the after message write: ESC and then :wq<Enter
+    git branch branchname  <- creates a new branch at the head position same as git checkout -b branchname
+    git branch           <- displays all the branches
+    git branch -d branchname  <- deletes a branchname branch
+    git branch -f main HEAD~3  <- move a branch with 3 commits back
+	git branch -m <branch_name> origin   <- creates branch on server with name branch_name
+    git checkout branchname  <- the HEAD jumps to the branchname branch
+    git checkout id      <- we can  jump to a commit by giving first 5 hexa from the commit hash
+    git checkout HEAD~4  <- moves the HEAD pointer 4 commits back
+    git checkout HEAD^   <- moves the HEAD pointer 1 commit back
+    git show             <- displays various objects
+    git show <id>        <-outputs metadata and content changes for a commit with id id
+    git gui              <- shows the graphical interface with tree representation
+    git log              <- show commits log on the branch we are on; 'q' on exit
+    git log d:/xyz/tre.tx<- shows in the log which commit it was added
+    git log -p d:/xyz/tre.tx <- shows in the log which commit it was added and the content of it
+    git log --follow <file>  <- lists version history for a file, including renames
+    git cherry-pick id   <- will add the id HASH commit to the branch  the Head points to without merging
+    git tag tagname      <- ads a tagname to the commit the HEAD is on
+    git reset --hard     <- discard all changes to local files permanantely
+    git reset HEAD       <- revert to a previous commit loosing the commits after it(^^ - with 2 commits)
+    git reset HEAD filename  <- unstages the filename file from the current commit
+    git reset <id>        <- undoes every commit  after the id comit preserving changes locally
+    git diff               <- difference between same staged area and working files directory
+    git diff 05db2 8c105   <- difference between 2 different commit files
+    git diff --color       <- difference between working dir and staging area
+    get diff --color filename <- diff between working area and staging area (1 file)
+    git diff d:/xyz/tre.tx <- difference in changes in a file
+    git diff <first branch>...<second branch> shows the difference between 2 different branch
+    git hash-object <filename> <- shows the hash ID for the selected filename
+    git cat-file -t <hashid>  <- the type of the file (blob/tree,etc)
+    git cat-file -p <hashid> <- views content of a file hash id
+    git gc                   <- invoking git garbage collector(usually not required)
+    git reflog               <- the log of everything done
+    git rebase -i <branchname> <- rebases the branchname to the branch the HEAD points to
+    git rm <nume fisier>       <- deletes the file from the harddrive but git keeping the track of the deletion.otherwise if you delete from the fileststem, then git looses track
+    git mv <sourcename> <destinationname> <- renames the file from sourcename to destination name
+    git mv <sourcename> <destination directory>  <- moves the file to the destination directory
+	git fetch <branchname>                   <- grabs the latest history on the branchname branch on the remote server and synchronies with the localmaschchine.It just synchs the ID names 
+	git fetch --all                          <- grabs the latest history on all the branches from the remote server.It just synchs the ID names
+	git push --all origin      <- push all branches to remote repository
+	git pull --rebase origin master   <- merges all the changes from the master branch to the current working branch
+To unstage files:
+   - To unstage the file but keep your changes: git restore --staged <file>
+   - To unstage everything but keep your changes: git reset.
+   - To unstage the file to current commit (HEAD): git reset HEAD <file>
+   - To discard all local changes, but save them for later: git stash.
+
+Git terminology:
+   - !!origin - is the shorthand name for the remote repository that a project was originally cloned from
+   - blob - snapshot of a file that contains arbitrary data, not asociated with a name, identifiable via the hashsum(hash ID) of the blobs content
+   - tree - represents the file system structure, asociates blobs with names( x blob is x-files data), can have subtrees to represent subdirectorys, adresable via their hash id
+   - commit - snapshot of files at a certain point of time, uniquely identifiable via its Hash ID, and contains message, author and comiter, comiter date , its parent comit,
+         a reference to the top level tree.It contains a tree of blobs which are the snapshot of the files taking part in the commit
+   - tag - can point to any git object, has a name and a message , used to give names to objects, most commonly commits
+           tag-->c45732(commit)-->tree->blobs and other trees           <- structure of an object storage
+   - Objects are stored in content adresable file system, and adresses are calculated by hashing the objects content.then are stored at $GIT_DIR/objects/$ADRESS[0:2}/$ADRESS[2:40}
+   - Objects are stored compressed with zlib.Inefficient for most objects.
+     pack files compress objects into single file, and an index file enumerates objects by hash and offset inside them.These are stored as delta chains
+     loose objects will acumulate over time.garbage collector is spawned at regular intervals which repack loose objects into pack files, pack multiple pack files together and prune unreachable objects
+   - Also its frees diskspace, improves performance working with the repository.can be invoked using git gc.
+   - References - pointers to commits are stored as references.Multiple type of references are available: HEAD, refs/heads - represent local branch names (refs/heads/master),
+             refs/remotes reprezents remote branches like refs/remotes/origin/master; refs.tags/ represents tags like refs/tags/v1.0
+           -naming a reference does not require its full name.references are resolved in Git by searching the folowing references in order
+             :refname->refs/refname->refs/tags/refname->refs/heads/refname->refs/heads/remotes/refname->refs/remotes//<refname>/HEAD
+           - references are stored as single files inside .git/refs/subrefs.normal references contain the referenced commits hash.They can be packed into a single pack file.
+Merges - a merge is a commit with multiple parents.Usually integrates changes  from another branch.There can be multiple parents (octopus merges)
+       - Git resolves merges via diffrerent strategies:fast forward merge if current branch head is an ancestor of the to be merged commit.
+       - five built in merge strategies:resolve,recursive,octopus,ours/theirs,subtree. can be specified with git merge -s <strategy>.custom merge drivers are also posible
+       - fast forward:   a->b->c->d                                                              git merge origin/master
+       - recursive: A->b1->b2   ->D  merge between the latest of the 2 commit of the 2 branches
+                    \->c1->c2->/
+    - To merge something from one branch into an other without merging the 2 branches together:
+	  git checkout thebranchwewanttomergeinto
+	  git merge SHAcodeofthecommitwewanttomergeintothebranch
+	  
+Revisions are a way to reference a git object (usually commits)
+                - specify commits can become tedious if only hashes are used
+                - named commits are the only ones to be of interest
+                - git provides advanced syntax to name commits or ranges of commits
+                - 2 important suffixes to walk the revision graph starting from a commit(windows command shell has problems with these as this keywords are reserved
+                - <ref>^<n> - the nth parent of <ref>.used to distinguish parents of a commit
+                - <ref>~<n> - the nth ancestor  of <ref>.Only walks the first parent chain
+Revision ranges - revision ranges are used to name multiple commits at once.most important is :git log
+                  Commit <rev> comits itseldf and all commits reachable by it
+                  Exclusion ^<rev>: Exclude commits reachable by <rev>
+                  Range <r1>..<r2>  equivalent to ~<r1>..<r2>;
+                  Symetric difference <r1>..<r2> equivalent to r1 r2 --not $(git merge base --all r1 r2)
+                  Include parents <rev> @c: include all parents of <rev>
+                  Commit with excluded parents <rev>~!: include <rev> but exclude its parents
+Reference logs - git tracks updates to local references
+               - allows to reset the working copy to a previous state ex git checkout HEAD@{1};git checkout master@{one.week.ago}; git checkout HEAD^1
+               - reverting to previous state can hinder garbage colection
+               - git reflog   shows everithing it was made in the log step by step
+Cherry picking
+               - next to merges and rebases, git can cherry pick single commits( it takes just the single modifications from the commit)
+               - it simply takes the commit's difference and applies the patch, resulting in a new commit
+               - often used to get a single bugfix commit on other branches
+               - as cherry picking creates a completely new commit is is not possible to relate a cherpicked commit with its original
+               - git cherry-pick commit id.the head needs to be on the branch we would like the commit to add to
+Rebase
+               - the interactive rebase can be used to restructure a branch
+               - often used to tidy up feature branches before publication
+               - allows to:pick commits in arbitrary order, drop commits,edit commits,reword commit messages,fixup or squash commits,exec arbitrary commands between commits
+               - rebase compared to merge adds the extra commits from the common branch intersection commits over the top of the branch we are rebasing to,
+                 resulting in a linear history.merge keeps the branches as they advanced in time.
+               - git rebase -i A~
+Workflows:
+workflows are usualy agreed upon by those that are participating in a project(push
+repository are all the files for a project
+first navigate where you want a repository
+to create a repository:
+
+  git init   <- it will make the folder a repository
+
+in git a repository has 3  different areas:
+
+  - repository history
+  - working copy
+  - staging area or index area
+
+when a new file is copied to the repository, its status is untracked
+the master branch is the release ready branch
+
+
+
+Staging Environment
+---------------------------------------------------------------------------------------------------
+this place is where important decisions are made which files will be commited and which not
+adding a file to staged (or indexing the file) :
+
+  git add *filename
+
+to add all files:
+
+  git add --all or git add -A
+
+to check the status of the files in the working area:
+
+  git status    or the short version git status --short (?? untracked file, a files added to stage, modified file, d deleted file)
+
+Commits:
+----------------------------------------------------------------------------
+Commit is a safepoint, a snapshot of the project in time.it is a snapshot of the staging area.
+Adding commits keep track of our progress and changes as we work. Git considers each commit change
+point or "save point". It is a point in the project you can go back to if you find a
+bug, or want to make a change.When we commit, we should always include a message.
+
+  git commit -m "First release of Hello World!"          <- m givess a message
+
+if you dont want to stage files but directly commit it every tracked file by git then
+
+  git commit -a -m "message"                    <-commit message usualy version message
+
+the commit object contains a snapshot  of the working object, author+date.
+every commit made makes a pointer(parent pointer) to the previous commit revision so it like a linear commit history
+everything in git is checksumed before it is stored and then it is refered by the checksum.The mechanism git uses for
+checksumming is called SHA-1 hash it is composed of a 40 character string in hexadecimal and is composed by the content
+of the commit instead of a revision, a commit is identified by a unique hash id  SHA
+to find out the SHA-(hash) for current HEAD:
+
+  git -show-ref
+
+HEAD reference does not contain a SHA(hash) value.it is a pointer to another reference
+
+Help if you dont remember commands :
+
+  git *command -help
+
+Branch
+------------------------------------------------------------------------------------
+
+In Git, a branch is a new/separate version of the main repository.it means creating a new development path
+it is a pointer to a line of deviation from the main
+
+  git branch "branchname"
+
+the new branch contains a pointer to the commit it points to and has the SHA checksum of 40 hexa char
+
+  git checkout branchname        <- the HEAD pointer points to the branch with the branchname
+
+to find all the branches:
+
+  git branch -a
+
+and to position the head to the new brench:
+
+  git checkout  branchname    [the name in the ]
+
+
+after a branch remains, to merge it with the main branch:
+
+  git merge branchname
+
+it creates a new commit object( so called merge commit), and a new history entry.The HEAD needs to be on the branch to which we are merging
+a git commit object has more parent pointers
+after the merge a development history will include the branch history too
+dangling commit objects are commit objects that are made on an commit object that is not the last commit object in the branch.
+if the head pointer is moving away from them the commits will be lost
+To remove a branch  from the branch history:
+
+   git branch -d branchname
+
+To add tags where the head is :
+   git tag v1.0                   <- any tag label
+
+when someone introduced a commit that needs to be updated because of a bug or incomplete file uploads:
+
+     git --amend                                   <-  makes a comit,ataches the  pointer to the commit beffore the one with the problem and the buggy commit will be dangling or lost commmit
+
+to undo comits:
+
+       git reset HEAD~1      or git reset HEAD ^     <- resets the head to 1 commit before the last andmakes the last one a dangled comit. if ^^ then 2 position
+       git reset commit_id                           <- commit id is the hash in hexa
+
+if some commits are needed to merge from one branch to the other branch  without merging the 2 branches:
+
+          git cherry-pick coommit_id                  <- commit_id in hexa hash of the commit we want to merge into the other branch(HEAD must be on the first branch)
+
+when there are 2 branches and feature from the second branch needs to be merged with the first branch without branchmerging ,a rebase is nedded so the first branch will contain the new
+introduced commit from the second branch without merging(rewriting history).Head needs to be  on the first branch
+
+     git rebase second branch                     <- the HEAD needs to be on the other branch
+
+we can  get the specific commit id with command:
+
+     git log
+
+ when you have modified files and you want to revert to a commit:
+
+     git reset HEAD             <- will lose all the changes(file modifications)
+
+     git add .gitignore                git ads the patterns contained in the gitignore file to the gitignore list (build files, etc)
+
+     An optional prefix "!" which negates the pattern; any matching file excluded by a previous pattern will become included again. It is not possible to re-include a file if a parent directory of that file is excluded. Git doesn’t list excluded directories for performance reasons, so any patterns on contained files have no effect, no matter where they are defined. Put a backslash ("\") in front of the first "!" for patterns that begin with a literal "!", for example, "\!important!.txt".
+
+The slash / is used as the directory separator. Separators may occur at the beginning, middle or end of the .gitignore search pattern.
+If there is a separator at the beginning or middle (or both) of the pattern, then the pattern is relative to the directory level of the particular .gitignore file itself. Otherwise the pattern may also match at any level below the .gitignore level.
+If there is a separator at the end of the pattern then the pattern will only match directories, otherwise the pattern can match both files and directories.
+For example, a pattern doc/frotz/ matches doc/frotz directory, but not a/doc/frotz directory; however frotz/ matches frotz and a/frotz that is a directory (all paths are relative from the .gitignore file).
+An asterisk "*" matches anything except a slash. The character "?" matches any one character except "/". The range notation, e.g. [a-zA-Z], can be used to match one of the characters in a range. See fnmatch(3) and the FNM_PATHNAME flag for a more detailed description.
+Two consecutive asterisks ("**") in patterns matched against full pathname may have special meaning:
+A leading "**" followed by a slash means match in all directories. For example, "**/foo" matches file or directory "foo" anywhere, the same as pattern "foo". "**/foo/bar" matches file or directory "bar" anywhere that is directly under directory "foo".
+A trailing "/**" matches everything inside. For example, "abc/**" matches all files inside directory "abc", relative to the location of the .gitignore file, with infinite depth.
+A slash followed by two consecutive asterisks then a slash matches zero or more directories. For example, "a/**/b" matches "a/b", "a/x/b", "a/x/y/b" and so on.
+Other consecutive asterisks are considered regular asterisks and will match according to the previous rules.
+The pattern hello.* matches any file or folder whose name begins with hello.. If one wants to restrict this only to the directory and not in its subdirectories, one can prepend the pattern with a slash, i.e. /hello.*; the pattern now matches hello.txt, hello.c but not a/hello.java.
+The pattern foo/ will match a directory foo and paths underneath it, but will not match a regular file or a symbolic link foo (this is consistent with the way how pathspec works in general in Git)
+The pattern doc/frotz and /doc/frotz have the same effect in any .gitignore file. In other words, a leading slash is not relevant if there is already a middle slash in the pattern.
+The pattern "foo/*", matches "foo/test.json" (a regular file), "foo/bar" (a directory), but it does not match "foo/bar/hello.c" (a regular file), as the asterisk in the pattern does not match "bar/hello.c" which has a slash in it.
+
+Github
+------------------------------------------------------------------------------------------------------------------------
+in order for github to work we need 2 condition: git to be instaled on the maschine and the remote git url where we will connect (git@github.conti.de:training/Example.git
+to clone a repository from a remote server:
+
+   git clone git@github.conti.de:training/Example.git           <- will download a git copy of the repository
+   git checkout branchname                <- will put the HEAD to the branch where we want to add changes on our computer
+   git commit                             <- we add commited staged files to the branch
+
+there are 2 branches: local branches and remote branches.remote branches are read only and downloaded when we clone a repository
+we can track the diference between the remote repository and the one in our local disk by moving the HEAD from the last read only commit object
+from the named "origin/develop" branch to the first commit from our harddrive that is available after that read only commit (no need to connect to the remote repository)
+git keeps a tracking information between the local and remote branch,so when we need we can query the remote branch running:
+
+  git status
+
+we can see that the last commit is just on our local drive, and not on the git server
+
+  git push <remote url> <branchname>       <-it updates the remote branch from our local maschine to the host maschine and updates our local maschine with the updates from the server
+  git push git@github.conti.de:training/Example.git developerbranch
+  git status                               <- message that the local branch is synchronized with the remote branch
+
+if our local copy of the remote branch differs because in the meantime soneone uploaded a commit to the branch we are working on , it wil
+give an error.Before we upload our commit , we have to do a branchmerge to our localmaschine from the server.
+
+  git fetch <branchname>                   <- grabs the latest history on the branchname branch on the remote server and synchronies with the localmaschchine.It just synchs the ID names , it not downloads files.git merge does
+
+after that we can merge the remote repository with our local without any conflict.
+
+  git merge <branchname>                  <- now we have the latest commits from the server and can push our changes to the server
+
+this workflow is not eficient if multiple ppl are working on the main branch because of the multiple synchs that needs to be done
+instead working on a feature branch helps avoid colision between multiple programmers
+
+  git checkout -b feature                 <- creates a new branch called feature (HEAD must be on the latest commit on the main branch)
+  git commit                              <- makes a local commit to this new local branch
+  the deelopment is ongoing, and to sync us with the main branch :
+  git fetch branchname       <- takes the latest repository ID's from the branchname nranche into our local maschine
+  git branch merge branchname <- merges the remote commits and changes into our local repository, leaving our branchline and commit alone
+  git push branchname         <- we push our updated branchname into the remote seerver so then it can be see  by others
+  git request-pull v1.0 git@github.conti.de:training/Example.git
+
+pull request is a request to merge our development branch uploaded to the remote server repository into the main branch.The server will try to merge without conflict.if there are conflicting files, github will not make the merge
+In these case we make again sure that the remote server is in sync with ours (fetch/merge) and then we try a push command to sync the server with our localmaschine.Then we try again the pull request.
+then you can make:
+  git fetch branchname
+  git merge branchname      to sync the localhost to the remote repository server (github)
+
+tortoisegit  graphical user interface
+jgit java library
+libgit2 is a c library
+
+latest git update:
+--------------------------------
+navigalni a folderbe ahol van a git repository; -> git bash here
+git remote -v     <- lists the available remotes
+git remote add origin http://github.com/myname/gitname .git    <- adds the gitname.git repository to the github account ont the github server
+git push -u origin master      <- pushes the local changes to the server github repository (origin  name of the remote), master is name of branch
+git status checks the status of the git
+git pull httpadress branchname          <- talan kell a head a branchen legyen?
+git pull http::/conti... master
+git checkout -b branchname  <- will make a new branch from the branch that the head is on
+git push -u origin relaxing   <- will push just the new branch to github
+
+To resolve merge or rebase conflicts:
+------------------------------------------------------------
+git merge or git rebase command
+after the git merge or rebase conflict message
+git status   <- an overview of the git merge  or rebase status
+git mergetool            <- tool to resolve conflicts
+git rebase --continue
+
+git rebase or merge --abort    <- revert to the state before the merge or rebase
+
+To merge something from one branch into an other without merging the 2 branches together
+--------------------------------------------------------------
+	  git checkout thebranchwewanttomergeinto
+	  git merge SHAcodeofthecommitwewanttomergeintothebranch
+
+Conti gitworkflow
+---------------------------------------------------------------------
+we make a branch:
+feature/RAD600-8049/enablestaticanalysis                   - RAD600 - 8049  - idul ticketului in jira sau   - dupa acea descrierea - prograessul ticketului trebuie sa fie in progress
+
+Description:
+Add QAC environment to RAD600
+
+This is first introduvtion of QAC for RAD600 project in adas_mtsi
+no source code change               
+Related: RAD600-8049                <- jira ticket
+
+- veify master branch is up to date
+- create branch 
+- modifying code
+- git-gui for commit -> commit message
+- push to git
+- in github - search for the branchname -> click on the hashname under Code download-> detail
+pt merguirea in master se face pull request(compare and pull request-> over Code download).se completeaza templateul, trebuie ales revieweri din dreapta
+
+Rebase multiple commits:
+---------------------------------------------------------------------
+   - we can squash multiple consecutive commits into one :
+   ex. git reset --soft HEAD~17     <- from 17 comits backward will start the squash, including the commit we are on 
+       git commit            <- will commit to a new commit 
+  
+  - we can suash more succesive commits if we know how many.N is the number until the one we want to remain
+   ex. git rebase -i HEAD~N      <- n is the number of comits we want to squash
+       git rebase -i HEAD~[7]
+   - we can squash comits with  rebase until a comit we know the hash
+   ex. git rebase -i [commit-hash]
