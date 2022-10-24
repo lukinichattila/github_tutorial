@@ -378,3 +378,23 @@ Rebase multiple commits:
        git rebase -i HEAD~[7]
    - we can squash comits with  rebase until a comit we know the hash
    ex. git rebase -i [commit-hash]
+   
+to bring a file from different branch into the active branch:
+----------------------------------------------------------------------
+	Solution 1: we can bring entire folders or multiple files
+		- we switch to the branch where we want to copy:
+		git checkout ourbranchename
+		- we copy the file from the different branch
+		git checkout theotherbranch -- ourfile.c-
+		- we check if the file was copied:
+		git status
+	Solution 2: 
+		- we switch to another branch :
+		git switch thebranchweworkon
+		- we get the file from the other branch:
+		git restore --source thebranchwegetthefilefrom -- ourfile.c
+		
+git add .
+git commit - apare o fereastra unde se pune mesajul, se da save pe butonul de discheta stanga sus
+git push -> message to push changes:
+git push --set-upstream origin feature/RAD60........
