@@ -59,6 +59,8 @@ comMands:
 	git fetch --all                          <- grabs the latest history on all the branches from the remote server.It just synchs the ID names
 	git push --all origin      <- push all branches to remote repository
 	git pull --rebase origin master   <- merges all the changes from the master branch to the current working branch
+	git pull origin <branchname> - brings a branch from the remote server to the repository we cloned
+	git clone -b <branchname> <remote-repo-url>
 To unstage files:
    - To unstage the file but keep your changes: git restore --staged <file>
    - To unstage everything but keep your changes: git reset.
@@ -398,3 +400,12 @@ git add .
 git commit - apare o fereastra unde se pune mesajul, se da save pe butonul de discheta stanga sus
 git push -> message to push changes:
 git push --set-upstream origin feature/RAD60........
+
+To bring a specif branch into the repository other then master from remote(clone repository not master):
+----------------------------------------------------------------------
+- we need a cloned repository
+!! ex. git pull origin <branchname> - brings a branch from the remote server to the repository we cloned. we need to not have uncomitted changes, preferably be on the clean master
+
+to push a local branch to the remote server:
+-----------------------------------------------------------------------
+git push -u origin <branchname>
